@@ -1,8 +1,10 @@
+import 'package:add_to_card_api/model_bottom_sheet.dart';
 import 'package:add_to_card_api/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
+
 
 
 class ProductScreen extends StatefulWidget {
@@ -141,29 +143,51 @@ class _ProductScreenState extends State<ProductScreen>
                           childAspectRatio: 1,
                         ),
                           itemBuilder: (context, index) {
-                            return Card(
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                          child: Image.network(productProvider
-                                              .data_list![index]['image']
-                                              .toString())),
-                                    ),
-                                    Text(
-                                      productProvider.data_list![index]['title']
+                            return GestureDetector(
+                              onTap: (){
+                                showModalBottomSheet<void>(
+                                  isDismissible: false,
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return MyBottomSheet(
+                                      image: productProvider
+                                          .data_list![index]['image']
                                           .toString(),
-                                      style: TextStyle(),
-                                    ),
-                                    Text(
-                                      'Price ${productProvider.data_list![index]['price'].toString()}',
-                                      style: TextStyle(),
-                                    )
-                                  ],
-                                ));
+                                      title: productProvider.data_list![index]['title']
+                                          .toString(),
+                                        price: double.parse(productProvider.data_list![index]['price'].toString()),
+                                      description: productProvider.data_list!  [index]["description"],
+                                    //  count: double.parse(productProvider.data_list![index]['count'].toString()),
+
+                                    );
+                                  },
+                                );
+                              },
+                              child: Card(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                            child: Image.network(productProvider
+                                                .data_list![index]['image']
+                                                .toString())),
+                                      ),
+                                      Text(
+                                        productProvider.data_list![index]['title']
+                                            .toString(),
+                                        style: TextStyle(),
+                                      ),
+                                      Text(
+                                         'Price ${productProvider.data_list![index]['price'].toString()}',
+                                        // style: TextStyle(),
+                                        // '৳ ${double.tryParse(productProvider.data_list[index][pr]!)?.toStringAsFixed(1)}',
+                                        // style: TextStyle(color: Colors.green),
+                                      )
+                                    ],
+                                  )),
+                            );
                           },
-
-
                       ),
                     ],
                   ),
@@ -185,24 +209,41 @@ class _ProductScreenState extends State<ProductScreen>
                             // for (var p in men) {
                             //  // print(p['price']);
                             // }
-                            return Card(
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                          child: Image.network(
-                                              men[index]['image'].toString())),
-                                    ),
-                                    Text(
-                                      men[index]['title'].toString(),
-                                      style: TextStyle(),
-                                    ),
-                                    Text(
-                                      'Price ${men[index]['price'].toString()}',
-                                      style: TextStyle(),
-                                    )
-                                  ],
-                                ));
+                            return GestureDetector(
+                              onTap: (){
+                                showModalBottomSheet(
+                                  isDismissible: false,
+                                  isScrollControlled: true,
+                                    context: context,
+                                    builder: (BuildContext context){
+                                  return MyBottomSheet(
+
+
+                                  );
+                                    });
+
+
+
+                              },
+                              child: Card(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                            child: Image.network(
+                                                men[index]['image'].toString())),
+                                      ),
+                                      Text(
+                                        men[index]['title'].toString(),
+                                        style: TextStyle(),
+                                      ),
+                                      Text(
+                                        'Price ${men[index]['price'].toString()}',
+                                        style: TextStyle(),
+                                      )
+                                    ],
+                                  )),
+                            );
                           })
                     ],
                   ),
