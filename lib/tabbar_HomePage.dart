@@ -1,9 +1,12 @@
-import 'package:add_to_card_api/model_bottom_sheet.dart';
+import 'package:add_to_card_api/models/model_bottom_sheet.dart';
 import 'package:add_to_card_api/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
+
+import 'bottom_nav/floatingbutton.dart';
+import 'bottom_nav/navigationbar.dart';
 
 
 
@@ -50,6 +53,8 @@ class _ProductScreenState extends State<ProductScreen>
         .toList();
 
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -216,7 +221,7 @@ class _ProductScreenState extends State<ProductScreen>
                                   isScrollControlled: true,
                                     context: context,
                                     builder: (BuildContext context){
-                                  return MyBottomSheet(
+                            return MyBottomSheet(
 
 
                                   );
@@ -369,10 +374,23 @@ class _ProductScreenState extends State<ProductScreen>
             ),
           ),
         ],
-      ),bottomNavigationBar: BottomAppBar(
+      ),
+      floatingActionButton: (
+          FloatingActionButton(
+            backgroundColor: Colors.orange,
+            onPressed: () {
+              // Navigator.of(context).push(
+              //     MaterialPageRoute(builder: (context) => CartScreen()));
+            },
+            child: Icon(
+              Icons.shopping_bag_sharp,
+              color: Colors.black,
+            ),
+
+    )), bottomNavigationBar: (
+          bottomAppBar(context,Colors.amber)),
+      );
 
 
-    ),
-    );
   }
 }
