@@ -1,3 +1,4 @@
+import 'package:add_to_card_api/provider/cart_provider.dart';
 import 'package:add_to_card_api/provider/product_provider.dart';
 import 'package:add_to_card_api/tabbar_HomePage.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<CartProvider>(create: ((context) => CartProvider())),
         ChangeNotifierProvider<ProductProvider>(create: ((context)=>ProductProvider())),
       ],
       child: MaterialApp(

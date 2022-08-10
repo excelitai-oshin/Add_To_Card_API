@@ -1,106 +1,72 @@
+import 'package:add_to_card_api/database/db_helper.dart';
 import 'package:add_to_card_api/models/cart_models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../database/db_helper.dart';
-
 
 class CartProvider with ChangeNotifier {
-  DBHelper dbHelper = DBHelper();
+  DBHelper db = DBHelper();
   int _counter = 0;
-  int _quantity = 1;
   int get counter => _counter;
-  int get quantity => _quantity;
 
-  double _totalPrice = 0.0;
-  double get totalPrice => _totalPrice;
+  double _totalprice = 0.0;
+  double get totalprice => _totalprice;
 
+  late Future<List<Cart>> _cart;
   List<Cart> cart = [];
 
+  // Future<List<Cart>> get cart => _cart;
+
   Future<List<Cart>> getData() async {
-    cart = await dbHelper.getCartList();
-    notifyListeners();
-    return cart;
+    _cart = db.getCartList();
+    return _cart;
   }
 
-  void _setPrefsItems() async {
+  void _setPrefItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('cart_items', _counter);
-    prefs.setInt('item_quantity', _quantity);
-    prefs.setDouble('total_price', _totalPrice);
+    prefs.setInt("cart_item", _counter);
+    prefs.setDouble("total_price", _totalprice);
     notifyListeners();
   }
 
-  void _getPrefsItems() async {
+  void _getPrefItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _counter = prefs.getInt('cart_items') ?? 0;
-    _quantity = prefs.getInt('item_quantity') ?? 1;
-    _totalPrice = prefs.getDouble('total_price') ?? 0;
+    _counter = prefs.getInt("cart_item") ?? 0;
+    _totalprice = prefs.getDouble("total_price") ?? 0.0;
+    notifyListeners();
+  }
+
+  void addTotalPrice(double productprice) {
+    _totalprice = _totalprice + productprice;
+    _setPrefItems();
+    notifyListeners();
+  }
+
+  void removeTotalPrice(double productprice) {
+    _totalprice = _totalprice - productprice;
+    _setPrefItems();
+    notifyListeners();
+  }
+
+  double getTotalprice() {
+    _getPrefItems();
+    return _totalprice;
   }
 
   void addCounter() {
     _counter++;
-    _setPrefsItems();
+    _setPrefItems();
     notifyListeners();
   }
 
   void removeCounter() {
     _counter--;
-    _setPrefsItems();
+    _setPrefItems();
     notifyListeners();
   }
 
-  getCounter()async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _counter = prefs.getInt('cart_items') ?? 0;
-    notifyListeners();
-  }
-
-  void addQuantity(int id) {
-    final index = cart.indexWhere((element) => element.id == id);
-    cart[index].quantity!.value = cart[index].quantity!.value + 1;
-    _setPrefsItems();
-    notifyListeners();
-  }
-
-  void deleteQuantity(int id) {
-    final index = cart.indexWhere((element) => element.id == id);
-    final currentQuantity = cart[index].quantity!.value;
-    if (currentQuantity <= 1) {
-      currentQuantity == 1;
-    } else {
-      cart[index].quantity!.value = currentQuantity - 1;
-    }
-    _setPrefsItems();
-    notifyListeners();
-  }
-
-  void removeItem(int id) {
-    final index = cart.indexWhere((element) => element.id == id);
-    cart.removeAt(index);
-    _setPrefsItems();
-    notifyListeners();
-  }
-
-  int getQuantity(int quantity) {
-    _getPrefsItems();
-    return _quantity;
-  }
-
-  void addTotalPrice(double productPrice) {
-    _totalPrice = _totalPrice + productPrice;
-    _setPrefsItems();
-    notifyListeners();
-  }
-
-  void removeTotalPrice(double productPrice) {
-    _totalPrice = _totalPrice - productPrice;
-    _setPrefsItems();
-    notifyListeners();
-  }
-
-  double getTotalPrice() {
-    _getPrefsItems();
-    return _totalPrice;
+  int getCounter() {
+    _getPrefItems();
+    return _counter;
   }
 }

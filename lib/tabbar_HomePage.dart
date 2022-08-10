@@ -1,5 +1,8 @@
+import 'package:add_to_card_api/cart_screen.dart';
 import 'package:add_to_card_api/models/model_bottom_sheet.dart';
+import 'package:add_to_card_api/provider/cart_provider.dart';
 import 'package:add_to_card_api/provider/product_provider.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
@@ -7,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'bottom_nav/floatingbutton.dart';
 import 'bottom_nav/navigationbar.dart';
+import 'database/db_helper.dart';
 
 
 
@@ -20,6 +24,8 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen>
     with TickerProviderStateMixin {
 
+  DBHelper dbHelper = DBHelper();
+
   void initState() {
     ProductProvider productProvider =
     Provider.of<ProductProvider>(context, listen: false);
@@ -29,6 +35,7 @@ class _ProductScreenState extends State<ProductScreen>
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
     ProductProvider productProvider = Provider.of<ProductProvider>(context);
     TabController _tabController = TabController(length: 5, vsync: this);
     List men = productProvider.data_list!
@@ -156,13 +163,13 @@ class _ProductScreenState extends State<ProductScreen>
                                   context: context,
                                   builder: (BuildContext context) {
                                     return MyBottomSheet(
-                                      image: productProvider
+                                      productsImage: productProvider
                                           .data_list![index]['image']
                                           .toString(),
-                                      title: productProvider.data_list![index]['title']
+                                      productName: productProvider.data_list![index]['title']
                                           .toString(),
-                                        price: double.parse(productProvider.data_list![index]['price'].toString()),
-                                      description: productProvider.data_list!  [index]["description"],
+                                      productPrice: double.parse(productProvider.data_list![index]['price'].toString()),
+                                      Description: productProvider.data_list!  [index]["description"],
                                     //  count: double.parse(productProvider.data_list![index]['count'].toString()),
 
                                     );
@@ -210,10 +217,6 @@ class _ProductScreenState extends State<ProductScreen>
                             childAspectRatio: 1,
                           ),
                           itemBuilder: (context, index) {
-                            // men.sort((a, b) => a['price'].compareTo(b['price']));
-                            // for (var p in men) {
-                            //  // print(p['price']);
-                            // }
                             return GestureDetector(
                               onTap: (){
                                 showModalBottomSheet(
@@ -379,12 +382,20 @@ class _ProductScreenState extends State<ProductScreen>
           FloatingActionButton(
             backgroundColor: Colors.orange,
             onPressed: () {
-              // Navigator.of(context).push(
-              //     MaterialPageRoute(builder: (context) => CartScreen()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => CartScreen()));
             },
-            child: Icon(
-              Icons.shopping_bag_sharp,
-              color: Colors.black,
+            child: Center(
+              child: Badge(
+                badgeContent: Consumer<CartProvider>(
+                  builder: (context, value, child) {
+                    return Text(value.getCounter().toString(),
+                        style: TextStyle(color: Colors.red));
+                  },
+                ),
+                animationDuration: Duration(microseconds: 300),
+                child: Icon(Icons.shopping_bag),
+              ),
             ),
 
     )), bottomNavigationBar: (
