@@ -12,7 +12,7 @@ class Cart {
 
   Cart(
       {this.id,
-        required this.productId,
+      this.productId,
         required this.productName,
         required this.initialPrice,
         required this.productPrice,
